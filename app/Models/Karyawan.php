@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model; // Menggunakan Model sebagai parent class
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
 class Karyawan extends Model
@@ -32,5 +32,24 @@ class Karyawan extends Model
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+    ];
+
+    // Di dalam model Karyawan
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'id_kategori', 'id');
+    }
+
+    // Validasi saat menyimpan data
+    public static $rules = [
+        'nama' => 'required|string|max:255',
+        'alamat' => 'required|string',
+        'jenis_kelamin' => 'required|in:Laki-laki,Perempuan', // Misalnya hanya menerima Laki-laki atau Perempuan
+        'tanggal_lahir' => 'required|date',
+        'tlp' => 'required|string|max:20',
+        'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Foto harus berupa gambar dengan format tertentu dan maksimum ukuran 2MB
+        'email' => 'required|string|email|max:255|unique:karyawan',
+        'password' => 'required|string|min:8',
+        'id_kategori' => 'required|exists:kategori,id',
     ];
 }

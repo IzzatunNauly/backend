@@ -12,10 +12,21 @@ class KategoriController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $kategori = Kategori::paginate(10);
-        return view('kategori.index', compact('kategori'));
+        // Validasi input pencarian
+        $request->validate([
+            'search' => 'nullable|string|max:255',
+        ]);
+
+        // Mendapatkan nilai pencarian dari request
+        $search = $request->get('search');
+
+        // Melakukan query untuk mencari kategori berdasarkan nama_kategori yang cocok dengan pencarian
+        $kategori = Kategori::where('nama_kategori', 'like', '%'.$search.'%')->paginate(5);
+
+        // Mengirim data kategori ke view
+        return view('admin.kategori.index', compact('kategori'));
     }
 
     /**
@@ -25,7 +36,7 @@ class KategoriController extends Controller
      */
     public function create()
     {
-        return view('kategori.create');
+        return view('admin/kategori.create');
     }
 
     /**
@@ -53,7 +64,7 @@ class KategoriController extends Controller
     public function show($id)
     {
         $kategori = Kategori::findOrFail($id);
-        return view('kategori.detail', compact('kategori'));
+        return view('admin/kategori.detail', compact('kategori'));
     }
 
     /**
@@ -65,7 +76,7 @@ class KategoriController extends Controller
     public function edit($id)
     {
         $kategori = Kategori::findOrFail($id);
-        return view('kategori.edit', compact('kategori'));
+        return view('admin/kategori.edit', compact('kategori'));
     }
 
     /**
